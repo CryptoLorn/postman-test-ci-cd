@@ -25,7 +25,7 @@ jobs:
         run: postman logout ${{ secrets.POSTMAN_API_KEY }}
   deploy:
     needs: automated-api-tests
-      if: ${{ needs.automated-api-tests.outputs.test-status == 'success' }}
+    if: ${{ needs.automated-api-tests.outputs.test-status == 'success' }}
     name: Deploy app on AWS
     runs-on: ubuntu-latest
     steps:
