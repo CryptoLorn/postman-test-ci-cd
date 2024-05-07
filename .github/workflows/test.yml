@@ -1,0 +1,36 @@
+name: Automated API tests using Postman CLI
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  automated-api-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      test-status: ${{ steps.api-tests.outcome }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Run API tests
+        id: api-tests
+        run: |
+          postman collection run "21537729-da7379c9-a9eb-468a-bff4-60d8ac685c93" -e "21537729-6cf43ec2-9346-429c-8f19-a4fe06a81c46"
+          echo "test-status=${{ job.status }}" >> $GITHUB_ENV
+      - name: Logout
+        run: postman logout ${{ secrets.POSTMAN_API_KEY }}
+  deploy:
+    needs: automated-api-tests
+      if: ${{ needs.automated-api-tests.outputs.test-status == 'success' }}
+    name: Deploy app on AWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run command on remote AWS server
+        run: |
+          echo "Script execution started."
