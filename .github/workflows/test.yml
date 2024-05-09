@@ -19,7 +19,7 @@ jobs:
       - name: Run API tests
         id: api-tests
         run: |
-          postman collection run "21537729-da7379c9-a9eb-468a-bff4-60d8ac685c93" -e "21537729-6cf43ec2-9346-429c-8f19-a4fe06a81c46"
+          postman collection run "21537729-fd725a1b-0abe-4618-a671-7f495b1ed14a" -e "21537729-6cf43ec2-9346-429c-8f19-a4fe06a81c46"
           echo "test-status=${{ job.status }}" >> $GITHUB_ENV
       - name: Logout
         run: postman logout ${{ secrets.POSTMAN_API_KEY }}
